@@ -1,0 +1,7 @@
+info:
+  contact: {}
+  description: this API for endpoints related to user.
+  title: Users Server API
+  version: 1.0.0
+paths: {}
+swagger: "2.0"
