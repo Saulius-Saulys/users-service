@@ -9,6 +9,7 @@ CREATE TABLE users.users
     password   TEXT                     NOT NULL,
     email      VARCHAR(100)             NOT NULL,
     country    CHAR(3)                  NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE NULL,
 

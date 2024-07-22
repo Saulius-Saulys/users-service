@@ -27,6 +27,7 @@ func NewHTTPServer(
 ) *Server {
 	httpServer := &http.Server{
 		Addr:              fmt.Sprintf(":%s", config.HTTPPort),
+		Handler:           router.ginEngine,
 		ReadHeaderTimeout: 3 * time.Second,
 	}
 	return &Server{

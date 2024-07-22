@@ -1,4 +1,4 @@
-http_port: 8099
+http_port: 8085
 base_path: /user-service/
 db_query_timeout_ms: 5000
 rabbit_mq:

@@ -44,6 +44,9 @@ func NewRouter(
 func (r *Router) configureEndpoints() {
 	baseGroup := r.ginEngine.Group(r.basePath + "/users")
 	baseGroup.POST("", r.userController.Create)
+	baseGroup.PUT("/:id", r.userController.Update)
+	baseGroup.DELETE("/:id", r.userController.Delete)
+	baseGroup.GET("/:country", r.userController.GetByCountry)
 }
 
 func (r *Router) configureCORS() {
