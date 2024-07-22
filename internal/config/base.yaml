@@ -1,17 +1,8 @@
-http_port: 8080
-grpc_port: 5005
-base_path: /convhub-llm/
+http_port: 8099
+base_path: /user-service/
 db_query_timeout_ms: 5000
-config_address: "convhub-config-svc.dialogstream.svc.cluster.local:5000"
-orchestrator_address: "orchestrator-svc.dialogstream.svc.cluster.local:5000"
-redis:
-  address: "localhost:6379"
-  max_retries: 2
 rabbit_mq:
   address: "convhub-rabbitmq.dialogstream.svc.cluster.local:5672"
   unused_queue_ttl_seconds: 900
 http_client:
   timeout_seconds: 30
-content_safety:
-  api_version: "2023-10-01"
-  address: "https://contentsafetyaceknowledge.cognitiveservices.azure.com"

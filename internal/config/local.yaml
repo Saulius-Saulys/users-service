@@ -1,25 +1,13 @@
-http_port: 8085
 postgresql:
   conn_max_lifetime: 21600
   conn_max_idle_time: 1
   conn_max_open: 50
   conn_max_idle: 10
   db_address: localhost
-  db_port: 5434
-  db_name: convhub_llm-communication
-  schema_name: llm_communication
-prompt_api:
-  url: https://prompt-api.humany.cc
-  base_path: /api/prompt
-  api_version: 2.0
-config_address: "localhost:5000"
-orchestrator_address: "localhost:5005"
+  db_port: 5435
+  db_name: users-service
+  schema_name: users
 rabbit_mq:
   address: "localhost:5672"
-knowledge:
-  domain: humany.cc
 rate_limits:
   completions_server_per_second: 0.5
-editor_assist:
-  model_family: gpt4
-  max_response_tokens: 2000

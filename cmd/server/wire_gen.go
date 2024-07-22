@@ -8,10 +8,16 @@ package main
 
 import (
 	"context"
+	"github.com/Saulius-Saulys/users-service/internal/config"
+	"github.com/Saulius-Saulys/users-service/internal/database/postgresql"
+	"github.com/Saulius-Saulys/users-service/internal/environment"
+	"github.com/Saulius-Saulys/users-service/internal/logger"
+	"github.com/Saulius-Saulys/users-service/internal/messaging/rabbitmq"
+	"github.com/Saulius-Saulys/users-service/internal/network/http"
+	"github.com/Saulius-Saulys/users-service/internal/network/http/controller"
+	"github.com/Saulius-Saulys/users-service/internal/repository"
+	"github.com/Saulius-Saulys/users-service/internal/service"
 	"github.com/gin-gonic/gin"
-	"github.com/telia-company/convhub-lmm-communication-service/internal/config"
-	"github.com/telia-company/convhub-lmm-communication-service/internal/logger"
-	"github.com/telia-company/convhub-lmm-communication-service/internal/network/http"
 )
 
 // Injectors from wire.go:
@@ -23,8 +29,20 @@ func inject(ctx context.Context) (userService, error) {
 	if err != nil {
 		return userService{}, err
 	}
-	router := http.NewRouter(engine, zapLogger, configConfig)
+	env := environment.NewEnv()
+	db, err := postgresql.NewUsersDB(configConfig, env, zapLogger)
+	if err != nil {
+		return userService{}, err
+	}
+	user := repository.NewUser(zapLogger, db)
+	clientImpl, err := rabbitmq.NewClientImpl(ctx, env, configConfig, zapLogger)
+	if err != nil {
+		return userService{}, err
+	}
+	serviceUser := service.NewUser(zapLogger, user, clientImpl)
+	controllerUser := controller.NewUser(zapLogger, serviceUser)
+	router := http.NewRouter(engine, zapLogger, configConfig, controllerUser)
 	server := http.NewHTTPServer(router, configConfig, zapLogger)
-	mainUserService := newUserService(server, zapLogger)
+	mainUserService := newUserService(server, zapLogger, clientImpl)
 	return mainUserService, nil
 }

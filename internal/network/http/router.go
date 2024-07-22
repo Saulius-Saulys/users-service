@@ -1,29 +1,33 @@
 package http
 
 import (
-	"github.com/telia-company/convhub-lmm-communication-service/internal/config"
-	"go.uber.org/zap/zapcore"
-	"time"
-
+	"github.com/Saulius-Saulys/users-service/internal/config"
+	"github.com/Saulius-Saulys/users-service/internal/network/http/controller"
 	"github.com/gin-contrib/cors"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+
+	"time"
 )
 
 type Router struct {
-	ginEngine *gin.Engine
-	basePath  string
+	ginEngine      *gin.Engine
+	basePath       string
+	userController *controller.User
 }
 
 func NewRouter(
 	ginEngine *gin.Engine,
 	logger *zap.Logger,
 	config *config.Config,
+	userController *controller.User,
 ) *Router {
 	router := &Router{
-		ginEngine: ginEngine,
-		basePath:  config.BasePath,
+		ginEngine:      ginEngine,
+		basePath:       config.BasePath,
+		userController: userController,
 	}
 
 	router.configureCORS()
@@ -38,8 +42,8 @@ func NewRouter(
 }
 
 func (r *Router) configureEndpoints() {
-	//baseGroup := r.ginEngine.Group(r.basePath + "/users")
-	//baseGroup.POST("/openai/deployments/:modelFamily/completions", r.completionsController.GetCompletion)
+	baseGroup := r.ginEngine.Group(r.basePath + "/users")
+	baseGroup.POST("", r.userController.Create)
 }
 
 func (r *Router) configureCORS() {
@@ -55,7 +59,6 @@ func (r *Router) configureCORS() {
 func requestLoggerMiddleware(logger *zap.Logger, timeFormat string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
-		// some evil middlewares modify this values
 		path := c.Request.URL.Path
 		query := c.Request.URL.RawQuery
 		c.Next()

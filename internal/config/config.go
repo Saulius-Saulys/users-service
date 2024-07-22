@@ -33,25 +33,19 @@ type HTTPClient struct {
 	TimeoutSeconds int `yaml:"timeout_seconds"`
 }
 
-type ContentSafety struct {
-	APIVersion string `yaml:"api_version"`
-	Address    string `yaml:"address"`
-}
-
 type RateLimits struct {
 	CompletionsServerPerSecond float64 `yaml:"completions_server_per_second"`
 }
 
 type Config struct {
-	DBQueryTimeoutMS int           `yaml:"db_query_timeout_ms"`
-	HTTPPort         string        `yaml:"http_port"`
-	BasePath         string        `yaml:"base_path"`
-	SecretMode       string        `yaml:"secret_mode"`
-	RabbitMQ         RabbitMQ      `yaml:"rabbit_mq"`
-	Postgresql       Postgresql    `yaml:"postgresql"`
-	HTTPClient       HTTPClient    `yaml:"http_client"`
-	ContentSafety    ContentSafety `yaml:"content_safety"`
-	RateLimits       RateLimits    `yaml:"rate_limits"`
+	DBQueryTimeoutMS int        `yaml:"db_query_timeout_ms"`
+	HTTPPort         string     `yaml:"http_port"`
+	BasePath         string     `yaml:"base_path"`
+	SecretMode       string     `yaml:"secret_mode"`
+	RabbitMQ         RabbitMQ   `yaml:"rabbit_mq"`
+	Postgresql       Postgresql `yaml:"postgresql"`
+	HTTPClient       HTTPClient `yaml:"http_client"`
+	RateLimits       RateLimits `yaml:"rate_limits"`
 }
 
 func NewConfig(logger *zap.Logger) (*Config, error) {
