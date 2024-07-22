@@ -21,10 +21,10 @@ func NewUser(logger *zap.Logger, gormInstance *gorm.DB) *User {
 	}
 }
 
-func (u *User) Create(user *dto.CreateUser) error {
+func (u *User) Create(user *dto.CreateUser) (*model.User, error) {
 	idUUID, err := uuid.NewRandom()
 	if err != nil {
-		return errors.Wrap(err, "failed to generate uuid")
+		return nil, errors.Wrap(err, "failed to generate uuid")
 	}
 
 	userModel := &model.User{
@@ -40,13 +40,13 @@ func (u *User) Create(user *dto.CreateUser) error {
 	result := u.gormInstance.Create(userModel)
 
 	if result.Error != nil {
-		return errors.Wrap(result.Error, "failed to insert user into database")
+		return nil, errors.Wrap(result.Error, "failed to insert user into database")
 	}
 
-	return nil
+	return userModel, nil
 }
 
-func (u *User) Update(id string, user *dto.UpdateUser) error {
+func (u *User) Update(id string, user *dto.UpdateUser) (*model.User, error) {
 	userModel := &model.User{
 		ID: id,
 	}
@@ -72,10 +72,10 @@ func (u *User) Update(id string, user *dto.UpdateUser) error {
 	result := u.gormInstance.Updates(userModel)
 
 	if result.Error != nil {
-		return errors.Wrap(result.Error, "failed to update user in database")
+		return nil, errors.Wrap(result.Error, "failed to update user in database")
 	}
 
-	return nil
+	return userModel, nil
 }
 
 func (u *User) Delete(id string) error {

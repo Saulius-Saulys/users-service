@@ -32,6 +32,18 @@ func NewUser(logger *zap.Logger, userService *service.User) *User {
 	}
 }
 
+// Create updates user by provided data
+//
+// @Schemes
+// @Summary		Creates user.
+// @Description	Creates user with provided from customer.
+// @Tags		User
+// @Param request body dto.CreateUser true "query params"
+// @Success		200			{object} model.User	"Successfully user created."
+// @Failure 	400			"Error appeared while creating user model."
+// @Failure 	422			"Validation error."
+// @Failure 	500			"Internal server error."
+// @Router		/user-service/users [post]
 func (u *User) Create(ctx *gin.Context) {
 	reqDTO := &dto.CreateUser{}
 	if err, errStatusCode := validation.ValidateJSONBody(ctx, reqDTO); err != nil {
@@ -41,16 +53,29 @@ func (u *User) Create(ctx *gin.Context) {
 		}
 		return
 	}
-	err := u.userService.Create(reqDTO)
+	user, err := u.userService.Create(reqDTO)
 	if err != nil {
 		abortErr := ctx.AbortWithError(http.StatusBadRequest, err)
 		if abortErr != nil {
 			u.logger.Error("failed to send error response")
 		}
 	}
-	ctx.JSON(http.StatusCreated, nil)
+	ctx.JSON(http.StatusCreated, user)
 }
 
+// Update updates user by provided data
+//
+// @Schemes
+// @Summary		Updates user.
+// @Description	Updates the user using provided data from customer.
+// @Tags		User
+// @Param		id	path	string 	true	"ID of user."
+// @Param request body dto.UpdateUser true "query params"
+// @Success		200			{object} model.User	"Successfully retrieved information of user."
+// @Failure 	400			"Error appeared while updating user model."
+// @Failure 	422			"Validation error."
+// @Failure 	500			"Internal server error."
+// @Router		/user-service/users/{id} [put]
 func (u *User) Update(ctx *gin.Context) {
 	userID := ctx.Param(idParam)
 	reqDTO := &dto.UpdateUser{}
@@ -62,7 +87,7 @@ func (u *User) Update(ctx *gin.Context) {
 		return
 	}
 
-	err := u.userService.Update(userID, reqDTO)
+	user, err := u.userService.Update(userID, reqDTO)
 	if err != nil {
 		abortErr := ctx.AbortWithError(http.StatusBadRequest, err)
 		if abortErr != nil {
@@ -70,9 +95,20 @@ func (u *User) Update(ctx *gin.Context) {
 		}
 	}
 
-	ctx.JSON(http.StatusOK, nil)
+	ctx.JSON(http.StatusOK, user)
 }
 
+// Delete deletes user
+//
+// @Schemes
+// @Summary		deletes user.
+// @Description	Deletes the user with ID provided.
+// @Tags		User
+// @Param		id	path	string 	true	"ID of user."
+// @Success		200			"Successfully retrieved information of user."
+// @Failure 	400			"Error appeared while deleting user model."
+// @Failure 	500			"Internal server error."
+// @Router		/user-service/users/{id} [delete]
 func (u *User) Delete(ctx *gin.Context) {
 	userID := ctx.Param(idParam)
 	err := u.userService.Delete(userID)
@@ -86,6 +122,19 @@ func (u *User) Delete(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, nil)
 }
 
+// GetByCountry get users by country
+//
+// @Schemes
+// @Summary		Gets users by country.
+// @Description	Gets users by country provided by customer.
+// @Tags		User
+// @Param		country	path	string 	true	"Country of user."
+// @Param		page	query	string 	true	"Page to retrieve."
+// @Param		limit	query	string 	true	"Limit of entries to retrieve."
+// @Success		200			{object} []model.User	"Successfully retrieved information of user from specific country."
+// @Failure 	400			"Error appeared while retrieving users."
+// @Failure 	500			"Internal server error."
+// @Router		/user-service/users/{country} [get]
 func (u *User) GetByCountry(ctx *gin.Context) {
 	params, err := u.retrieveGetByCountryParams(ctx)
 	if err != nil {

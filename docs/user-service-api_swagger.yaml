@@ -1,7 +1,209 @@
+definitions:
+  dto.Country:
+    enum:
+    - UK
+    - LTU
+    - FR
+    - SP
+    type: string
+    x-enum-varnames:
+    - UK
+    - LTU
+    - FR
+    - SP
+  dto.CreateUser:
+    properties:
+      country:
+        $ref: '#/definitions/dto.Country'
+      email:
+        description: 'TODO: add email validation'
+        maxLength: 100
+        minLength: 1
+        type: string
+      first_name:
+        maxLength: 75
+        minLength: 1
+        type: string
+      last_name:
+        maxLength: 75
+        minLength: 1
+        type: string
+      nickname:
+        maxLength: 75
+        minLength: 1
+        type: string
+      password:
+        maxLength: 75
+        minLength: 1
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - nickname
+    - password
+    type: object
+  dto.UpdateUser:
+    properties:
+      country:
+        $ref: '#/definitions/dto.Country'
+      email:
+        description: 'TODO: add email validation'
+        maxLength: 100
+        minLength: 1
+        type: string
+      first_name:
+        maxLength: 75
+        minLength: 1
+        type: string
+      last_name:
+        maxLength: 75
+        minLength: 1
+        type: string
+      nickname:
+        maxLength: 75
+        minLength: 1
+        type: string
+      password:
+        maxLength: 75
+        minLength: 1
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - nickname
+    - password
+    type: object
+  model.User:
+    properties:
+      country:
+        $ref: '#/definitions/dto.Country'
+      createdAt:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      nickname:
+        type: string
+      password:
+        type: string
+      updatedAt:
+        type: string
+    type: object
 info:
   contact: {}
   description: this API for endpoints related to user.
   title: Users Server API
   version: 1.0.0
-paths: {}
+paths:
+  /user-service/users:
+    post:
+      description: Creates user with provided from customer.
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUser'
+      responses:
+        "200":
+          description: Successfully user created.
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Error appeared while creating user model.
+        "422":
+          description: Validation error.
+        "500":
+          description: Internal server error.
+      summary: Creates user.
+      tags:
+      - User
+  /user-service/users/{country}:
+    get:
+      description: Gets users by country provided by customer.
+      parameters:
+      - description: Country of user.
+        in: path
+        name: country
+        required: true
+        type: string
+      - description: Page to retrieve.
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: Limit of entries to retrieve.
+        in: query
+        name: limit
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Successfully retrieved information of user from specific country.
+          schema:
+            items:
+              $ref: '#/definitions/model.User'
+            type: array
+        "400":
+          description: Error appeared while retrieving users.
+        "500":
+          description: Internal server error.
+      summary: Gets users by country.
+      tags:
+      - User
+  /user-service/users/{id}:
+    delete:
+      description: Deletes the user with ID provided.
+      parameters:
+      - description: ID of user.
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Successfully retrieved information of user.
+        "400":
+          description: Error appeared while deleting user model.
+        "500":
+          description: Internal server error.
+      summary: deletes user.
+      tags:
+      - User
+    put:
+      description: Updates the user using provided data from customer.
+      parameters:
+      - description: ID of user.
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUser'
+      responses:
+        "200":
+          description: Successfully retrieved information of user.
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Error appeared while updating user model.
+        "422":
+          description: Validation error.
+        "500":
+          description: Internal server error.
+      summary: Updates user.
+      tags:
+      - User
 swagger: "2.0"

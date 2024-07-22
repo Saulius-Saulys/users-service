@@ -24,21 +24,21 @@ func NewUser(logger *zap.Logger, userRepository *repository.User, rabbitMQClient
 	}
 }
 
-func (u *User) Create(user *dto.CreateUser) error {
+func (u *User) Create(user *dto.CreateUser) (*model.User, error) {
 	hashedPassword, err := utils.HashAndSalt([]byte(user.Password))
 	if err != nil {
-		return errors.Wrap(err, "failed to hash and salt password")
+		return nil, errors.Wrap(err, "failed to hash and salt password")
 	}
 	user.Password = hashedPassword
 
 	return u.userRepository.Create(user)
 }
 
-func (u *User) Update(id string, user *dto.UpdateUser) error {
+func (u *User) Update(id string, user *dto.UpdateUser) (*model.User, error) {
 	if user.Password != nil {
 		hashedPassword, err := utils.HashAndSalt([]byte(*user.Password))
 		if err != nil {
-			return errors.Wrap(err, "failed to hash and salt password")
+			return nil, errors.Wrap(err, "failed to hash and salt password")
 		}
 		user.Password = &hashedPassword
 	}
