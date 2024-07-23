@@ -3,6 +3,7 @@
 * [General info](#general-info)
 * [Linter](#linter)
 * [Swagger docs](#swaggerdocs)
+* [Mockery](#mockery)
 
 
 ## General info
@@ -44,3 +45,17 @@ go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
 For more information about `swaggo` visit: <https://github.com/swaggo/swag>
+
+## Mockery
+
+To generate mock interfaces, you need to install 'mockery'
+
+``` bash
+brew install mockery
+```
+
+After that run
+``` bash
+mockery;
+```
+For more information about mockery visit: https://github.com/vektra/mockery

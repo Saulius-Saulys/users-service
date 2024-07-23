@@ -3,6 +3,8 @@ package postgresql
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/Saulius-Saulys/users-service/internal/config"
 	"github.com/Saulius-Saulys/users-service/internal/environment"
 	"github.com/cenkalti/backoff/v3"
@@ -12,7 +14,6 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"moul.io/zapgorm2"
-	"time"
 )
 
 type GORMInstance struct {
@@ -36,7 +37,7 @@ func NewUsersDB(config *config.Config, env environment.Env, logger *zap.Logger) 
 	gormInstance, err := newGORMInstance(
 		NewDBParams{
 			Port:            config.Postgresql.DBPort,
-			Address:         config.Postgresql.DBAddress,
+			Address:         env.PostgreSQLDBHostname,
 			User:            env.PostgreSQLDBUser,
 			Password:        env.PostgreSQLDBPassword,
 			Name:            config.Postgresql.DBName,

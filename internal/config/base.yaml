@@ -1,8 +1,7 @@
-http_port: 8085
+http_port: 8080
 base_path: /user-service/
 db_query_timeout_ms: 5000
 rabbit_mq:
-  address: "convhub-rabbitmq.dialogstream.svc.cluster.local:5672"
   unused_queue_ttl_seconds: 900
 http_client:
   timeout_seconds: 30

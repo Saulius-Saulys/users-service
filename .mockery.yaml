@@ -1,0 +1,8 @@
+with-expecter: true
+filename: "{{ .InterfaceName | snakecase }}_mock.go"
+outpkg: "mocks"
+dir: "internal/mocks"
+packages:
+  github.com/Saulius-Saulys/users-service/internal/service:
+    interfaces:
+      RabbitMQPublisher:

@@ -27,11 +27,13 @@ func inject(ctx context.Context) (userService, error) {
 		environment.NewEnv,
 		logger.NewSeparatedLogger,
 		repository.NewUser,
+		wire.Bind(new(service.UserRepository), new(*repository.User)),
 		postgresql.NewUsersDB,
+		wire.Bind(new(controller.UserService), new(*service.User)),
 		service.NewUser,
 		controller.NewUser,
-		wire.Bind(new(rabbitmq.Client), new(*rabbitmq.ClientImpl)),
-		rabbitmq.NewClientImpl,
+		rabbitmq.NewPublisher,
+		wire.Bind(new(service.RabbitMQPublisher), new(*rabbitmq.Publisher)),
 	)
 
 	return userService{}, nil

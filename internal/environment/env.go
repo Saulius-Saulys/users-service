@@ -11,9 +11,10 @@ const (
 
 type Env struct {
 	Environment              string `var:"ENVIRONMENT"`
+	PostgreSQLDBHostname     string `var:"POSTGRESQL_DB_HOSTNAME"`
 	PostgreSQLDBUser         string `var:"POSTGRESQL_DB_USER"`
 	PostgreSQLDBPassword     string `var:"POSTGRESQL_DB_PASSWORD"`
-	RedisPassword            string `var:"REDIS_PASSWORD"`
+	RabbitMQHostname         string `var:"RABBITMQ_HOSTNAME"`
 	RabbitMQUser             string `var:"RABBITMQ_USER"`
 	RabbitMQPassword         string `var:"RABBITMQ_PASSWORD"`
 	OpenAIAzureAPIKey        string `var:"OPENAI_AZURE_API_KEY"`

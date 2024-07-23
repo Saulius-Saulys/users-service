@@ -3,11 +3,8 @@ postgresql:
   conn_max_idle_time: 1
   conn_max_open: 50
   conn_max_idle: 10
-  db_address: localhost
-  db_port: 5435
+  db_port: 5432
   db_name: users-service
   schema_name: users
-rabbit_mq:
-  address: "localhost:5672"
 rate_limits:
   completions_server_per_second: 0.5

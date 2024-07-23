@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/Saulius-Saulys/users-service/internal/network/http/controller/dto"
 	"time"
+
+	"github.com/Saulius-Saulys/users-service/internal/network/http/controller/dto"
 )
 
 type User struct {

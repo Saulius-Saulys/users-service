@@ -3,14 +3,15 @@ package validation
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/pkg/errors"
-	"net/http"
-	"strings"
 )
 
-func ValidateJSONBody(c *gin.Context, body any) (error, int) {
+func ValidateJSONBody(c *gin.Context, body any) (int, error) {
 	var errMsg string
 
 	if err := c.ShouldBindJSON(body); err != nil {
@@ -21,18 +22,17 @@ func ValidateJSONBody(c *gin.Context, body any) (error, int) {
 			for _, fieldErr := range validationErr {
 				description := operatorDescription(fieldErr.Tag())
 				errMsg += fmt.Sprintf("JSON field '%s' failed validation. Was: %v, expected %s %s.", strings.ToLower(fieldErr.Field()), fieldErr.Value(), description, fieldErr.Param())
-
 			}
-			return errors.New(errMsg), http.StatusUnprocessableEntity
+			return http.StatusUnprocessableEntity, errors.New(errMsg)
 		case errors.As(err, &unmarshalErr):
 			errMsg += fmt.Sprintf("JSON field '%s' failed validation. Was: %v, expected %s.", strings.ToLower(unmarshalErr.Field), unmarshalErr.Value, unmarshalErr.Type)
 
-			return errors.New(errMsg), http.StatusBadRequest
+			return http.StatusBadRequest, errors.New(errMsg)
 		default:
-			return errors.New("unknown error"), http.StatusInternalServerError
+			return http.StatusInternalServerError, errors.New("unknown error")
 		}
 	}
-	return nil, 0
+	return 0, nil
 }
 
 func operatorDescription(shortOperator string) string {

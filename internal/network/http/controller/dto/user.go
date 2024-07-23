@@ -2,6 +2,7 @@ package dto
 
 import (
 	"encoding/json"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/pkg/errors"
 )
@@ -36,21 +37,19 @@ func (c *Country) Validate() error {
 }
 
 type CreateUser struct {
-	FirstName string `json:"first_name" binding:"min=1,max=75" validate:"required"`
-	LastName  string `json:"last_name" binding:"min=1,max=75" validate:"required"`
-	Nickname  string `json:"nickname" binding:"min=1,max=75" validate:"required"`
-	Password  string `json:"password" binding:"min=1,max=75" validate:"required"`
-	//TODO: add email validation
-	Email   string  `json:"email" binding:"min=1,max=100" validate:"required"`
-	Country Country `json:"country"`
+	FirstName string  `json:"first_name" binding:"min=1,max=75" validate:"required"`
+	LastName  string  `json:"last_name" binding:"min=1,max=75" validate:"required"`
+	Nickname  string  `json:"nickname" binding:"min=1,max=75" validate:"required"`
+	Password  string  `json:"password" binding:"min=1,max=75" validate:"required"`
+	Email     string  `json:"email" binding:"email,min=1,max=100" validate:"required"`
+	Country   Country `json:"country"`
 }
 
 type UpdateUser struct {
-	FirstName *string `json:"first_name" binding:"omitnil,min=1,max=75" validate:"required"`
-	LastName  *string `json:"last_name" binding:"omitnil,min=1,max=75" validate:"required"`
-	Nickname  *string `json:"nickname" binding:"omitnil,min=1,max=75" validate:"required"`
-	Password  *string `json:"password" binding:"omitnil,min=1,max=75" validate:"required"`
-	//TODO: add email validation
-	Email   *string  `json:"email" binding:"omitnil,min=1,max=100" validate:"required"`
-	Country *Country `json:"country" binding:"omitnil"`
+	FirstName *string  `json:"first_name" binding:"omitnil,min=1,max=75" validate:"required"`
+	LastName  *string  `json:"last_name" binding:"omitnil,min=1,max=75" validate:"required"`
+	Nickname  *string  `json:"nickname" binding:"omitnil,min=1,max=75" validate:"required"`
+	Password  *string  `json:"password" binding:"omitnil,min=1,max=75" validate:"required"`
+	Email     *string  `json:"email" binding:"omitnil,email,min=1,max=100" validate:"required"`
+	Country   *Country `json:"country" binding:"omitnil"`
 }

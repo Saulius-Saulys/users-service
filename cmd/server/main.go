@@ -2,28 +2,29 @@ package main
 
 import (
 	"context"
+	"time"
+
 	"github.com/Saulius-Saulys/users-service/internal/logger"
 	"github.com/Saulius-Saulys/users-service/internal/messaging/rabbitmq"
 	"github.com/Saulius-Saulys/users-service/internal/network/http"
 	"go.uber.org/zap"
-	"time"
 )
 
 type userService struct {
-	httpServer     *http.Server
-	logger         *zap.Logger
-	rabbitMQClient rabbitmq.Client
+	httpServer        *http.Server
+	logger            *zap.Logger
+	rabbitMQPublisher *rabbitmq.Publisher
 }
 
 func newUserService(
 	httpServer *http.Server,
 	logger *zap.Logger,
-	rabbitMQClient rabbitmq.Client,
+	rabbitMQPublisher *rabbitmq.Publisher,
 ) userService {
 	return userService{
-		httpServer:     httpServer,
-		logger:         logger,
-		rabbitMQClient: rabbitMQClient,
+		httpServer:        httpServer,
+		logger:            logger,
+		rabbitMQPublisher: rabbitMQPublisher,
 	}
 }
 
@@ -51,9 +52,9 @@ func main() {
 
 func (us *userService) cleanup() {
 	us.logger.Debug("Performing server shutdown cleanup actions")
-	us.rabbitMQClient.Close()
+	us.rabbitMQPublisher.Close()
 	for i := 0; i < 10; i++ {
-		if us.rabbitMQClient.GetPublisherClient().Completed {
+		if us.rabbitMQPublisher.Completed {
 			return
 		}
 		time.Sleep(time.Second)

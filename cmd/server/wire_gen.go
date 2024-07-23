@@ -35,14 +35,14 @@ func inject(ctx context.Context) (userService, error) {
 		return userService{}, err
 	}
 	user := repository.NewUser(zapLogger, db)
-	clientImpl, err := rabbitmq.NewClientImpl(ctx, env, configConfig, zapLogger)
+	publisher, err := rabbitmq.NewPublisher(ctx, env, zapLogger)
 	if err != nil {
 		return userService{}, err
 	}
-	serviceUser := service.NewUser(zapLogger, user, clientImpl)
+	serviceUser := service.NewUser(zapLogger, user, publisher)
 	controllerUser := controller.NewUser(zapLogger, serviceUser)
 	router := http.NewRouter(engine, zapLogger, configConfig, controllerUser)
 	server := http.NewHTTPServer(router, configConfig, zapLogger)
-	mainUserService := newUserService(server, zapLogger, clientImpl)
+	mainUserService := newUserService(server, zapLogger, publisher)
 	return mainUserService, nil
 }

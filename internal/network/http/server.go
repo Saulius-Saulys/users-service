@@ -4,14 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/Saulius-Saulys/users-service/internal/config"
-	"go.uber.org/zap"
 	"net/http"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/Saulius-Saulys/users-service/internal/config"
+	"go.uber.org/zap"
 )
 
 type Server struct {

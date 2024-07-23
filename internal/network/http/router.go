@@ -97,6 +97,7 @@ func errorLoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 
 		// On bigger project I would add custom error handling here
 		logger.Error("API error appeared", zap.Error(ginErr))
-		c.JSON(c.Writer.Status(), ginErr)
+
+		c.JSON(c.Writer.Status(), ginErr.Error())
 	}
 }

@@ -6,19 +6,16 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Saulius-Saulys/users-service/internal/config"
 	"github.com/Saulius-Saulys/users-service/internal/environment"
-
+	"github.com/Saulius-Saulys/users-service/internal/model"
 	"github.com/furdarius/rabbitroutine"
-
-	"go.uber.org/zap"
-
 	"github.com/pkg/errors"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"go.uber.org/zap"
 )
 
 const (
-	dialogOutputExchangeName = "dialog_messages.output"
+	exchangeName = "users"
 )
 
 // Publisher owns the sole rabbit mq connection for message publishing in this service
@@ -31,13 +28,13 @@ type Publisher struct {
 	Completed bool
 }
 
-func NewPublisher(ctx context.Context, env environment.Env, conf *config.Config, logger *zap.Logger) (*Publisher, error) {
-	err := declareOutputExchange(env, conf, logger)
+func NewPublisher(ctx context.Context, env environment.Env, logger *zap.Logger) (*Publisher, error) {
+	err := declareOutputExchange(env, logger)
 	if err != nil {
 		return nil, err
 	}
 	conn := NewConnector("publisher", logger)
-	connectionString := fmt.Sprintf("amqp://%s:%s@%s/", env.RabbitMQUser, env.RabbitMQPassword, conf.RabbitMQ.Address)
+	connectionString := fmt.Sprintf("amqp://%s:%s@%s/", env.RabbitMQUser, env.RabbitMQPassword, env.RabbitMQHostname)
 	cancelCtx, cancel := context.WithCancel(ctx)
 	pool := rabbitroutine.NewLightningPool(conn)
 	ensurePub := rabbitroutine.NewFireForgetPublisher(pool)
@@ -68,9 +65,11 @@ func NewPublisherImpl(pub rabbitroutine.Publisher, logger *zap.Logger, closeFunc
 }
 
 type OutputMessage struct {
+	Action string
+	User   model.User
 }
 
-func (p *Publisher) PublishMessage(ctx context.Context, dialogID string, message *OutputMessage) error {
+func (p *Publisher) PublishMessage(ctx context.Context, message *OutputMessage) error {
 	outputJSON, err := json.Marshal(message)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal input message for publication on rabbit mq exchange")
@@ -79,7 +78,7 @@ func (p *Publisher) PublishMessage(ctx context.Context, dialogID string, message
 	timeoutCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	routingKey := fmt.Sprintf("%s.%s.%s", dialogOutputExchangeName, "widget", dialogID)
+	routingKey := fmt.Sprintf("%s.%s", exchangeName, "update")
 
 	publishing := amqp.Publishing{
 		ContentType: "text/plain",
@@ -87,16 +86,16 @@ func (p *Publisher) PublishMessage(ctx context.Context, dialogID string, message
 	}
 
 	p.logger.Debug("Publishing message", zap.String("message", string(outputJSON)), zap.String("routing_key", routingKey))
-	err = p.publisher.Publish(timeoutCtx, dialogOutputExchangeName, routingKey, publishing)
+	err = p.publisher.Publish(timeoutCtx, exchangeName, routingKey, publishing)
 	if err != nil {
-		return errors.Wrapf(err, "failed to publish message to exchange %s with routing key %s", dialogOutputExchangeName, routingKey)
+		return errors.Wrapf(err, "failed to publish message to exchange %s with routing key %s", exchangeName, routingKey)
 	}
 	return nil
 }
 
 // declareOutputExchange Needs to performed separately on startup to ensure that it exists
-func declareOutputExchange(env environment.Env, conf *config.Config, logger *zap.Logger) error {
-	connectionString := fmt.Sprintf("amqp://%s:%s@%s/", env.RabbitMQUser, env.RabbitMQPassword, conf.RabbitMQ.Address)
+func declareOutputExchange(env environment.Env, logger *zap.Logger) error {
+	connectionString := fmt.Sprintf("amqp://%s:%s@%s/", env.RabbitMQUser, env.RabbitMQPassword, env.RabbitMQHostname)
 	conn, err := amqp.Dial(connectionString)
 	if err != nil {
 		return errors.Wrap(err, "failed to connect to rabbitmq")
@@ -119,7 +118,7 @@ func declareOutputExchange(env environment.Env, conf *config.Config, logger *zap
 		}
 	}(channel)
 
-	err = declareExchange(channel, dialogOutputExchangeName)
+	err = declareExchange(channel, exchangeName)
 	if err != nil {
 		return errors.Wrap(err, "failed to declare dialog input exchange")
 	}

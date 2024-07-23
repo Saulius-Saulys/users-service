@@ -1,14 +1,15 @@
 package controller
 
 import (
+	"net/http"
+	"strconv"
+
+	"github.com/Saulius-Saulys/users-service/internal/model"
 	"github.com/Saulius-Saulys/users-service/internal/network/http/controller/dto"
 	"github.com/Saulius-Saulys/users-service/internal/network/http/validation"
-	"github.com/Saulius-Saulys/users-service/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"net/http"
-	"strconv"
 )
 
 const (
@@ -20,12 +21,19 @@ const (
 	defaultLimit = "10"
 )
 
-type User struct {
-	logger      *zap.Logger
-	userService *service.User
+type UserService interface {
+	Create(user *dto.CreateUser) (*model.User, error)
+	Update(id string, user *dto.UpdateUser) (*model.User, error)
+	Delete(id string) error
+	GetByCountry(country dto.Country, page, limit int) ([]model.User, error)
 }
 
-func NewUser(logger *zap.Logger, userService *service.User) *User {
+type User struct {
+	logger      *zap.Logger
+	userService UserService
+}
+
+func NewUser(logger *zap.Logger, userService UserService) *User {
 	return &User{
 		logger:      logger,
 		userService: userService,
@@ -46,7 +54,7 @@ func NewUser(logger *zap.Logger, userService *service.User) *User {
 // @Router		/user-service/users [post]
 func (u *User) Create(ctx *gin.Context) {
 	reqDTO := &dto.CreateUser{}
-	if err, errStatusCode := validation.ValidateJSONBody(ctx, reqDTO); err != nil {
+	if errStatusCode, err := validation.ValidateJSONBody(ctx, reqDTO); err != nil {
 		abortErr := ctx.AbortWithError(errStatusCode, err)
 		if abortErr != nil {
 			u.logger.Error("failed to send error response")
@@ -79,7 +87,7 @@ func (u *User) Create(ctx *gin.Context) {
 func (u *User) Update(ctx *gin.Context) {
 	userID := ctx.Param(idParam)
 	reqDTO := &dto.UpdateUser{}
-	if err, errStatusCode := validation.ValidateJSONBody(ctx, reqDTO); err != nil {
+	if errStatusCode, err := validation.ValidateJSONBody(ctx, reqDTO); err != nil {
 		abortErr := ctx.AbortWithError(errStatusCode, err)
 		if abortErr != nil {
 			u.logger.Error("failed to send error response")

@@ -4,10 +4,9 @@ import (
 	"time"
 
 	"github.com/furdarius/rabbitroutine"
-	"go.uber.org/zap"
-
 	"github.com/pkg/errors"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"go.uber.org/zap"
 )
 
 func NewConnector(name string, logger *zap.Logger) *rabbitroutine.Connector {
@@ -37,17 +36,13 @@ func NewConnector(name string, logger *zap.Logger) *rabbitroutine.Connector {
 
 func declareExchange(channel *amqp.Channel, exchangeName string) error {
 	exchangeType := "topic"
-	durable := true
-	autoDelete := false
-	internal := false
-	noWait := false
 	err := channel.ExchangeDeclare(
 		exchangeName,
 		exchangeType,
-		durable,
-		autoDelete,
-		internal,
-		noWait,
+		true,
+		false,
+		false,
+		false,
 		nil,
 	)
 	if err != nil {

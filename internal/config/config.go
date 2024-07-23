@@ -18,7 +18,6 @@ type Postgresql struct {
 	ConnMaxIdleTime int    `yaml:"conn_max_idle_time"`
 	ConnMaxOpen     int    `yaml:"conn_max_open"`
 	ConnMaxIdle     int    `yaml:"conn_max_idle"`
-	DBAddress       string `yaml:"db_address"`
 	DBPort          string `yaml:"db_port"`
 	DBName          string `yaml:"db_name"`
 	SchemaName      string `yaml:"schema_name"`

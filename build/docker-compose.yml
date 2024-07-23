@@ -20,10 +20,10 @@ services:
     restart: always
     environment:
       POSTGRESQL_DATABASE: users-service
-      POSTGRESQL_USERNAME: test_user
+      POSTGRESQL_USERNAME: test
       POSTGRESQL_PASSWORD: dev123
     ports:
-      - "5435:5432"
+      - "5432:5432"
     networks:
       test-net:
 
