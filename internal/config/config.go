@@ -23,11 +23,6 @@ type Postgresql struct {
 	SchemaName      string `yaml:"schema_name"`
 }
 
-type RabbitMQ struct {
-	Address               string `yaml:"address"`
-	UnusedQueueTTLSeconds int    `yaml:"unused_queue_ttl_seconds"`
-}
-
 type HTTPClient struct {
 	TimeoutSeconds int `yaml:"timeout_seconds"`
 }
@@ -37,14 +32,9 @@ type RateLimits struct {
 }
 
 type Config struct {
-	DBQueryTimeoutMS int        `yaml:"db_query_timeout_ms"`
-	HTTPPort         string     `yaml:"http_port"`
-	BasePath         string     `yaml:"base_path"`
-	SecretMode       string     `yaml:"secret_mode"`
-	RabbitMQ         RabbitMQ   `yaml:"rabbit_mq"`
-	Postgresql       Postgresql `yaml:"postgresql"`
-	HTTPClient       HTTPClient `yaml:"http_client"`
-	RateLimits       RateLimits `yaml:"rate_limits"`
+	HTTPPort   string     `yaml:"http_port"`
+	BasePath   string     `yaml:"base_path"`
+	Postgresql Postgresql `yaml:"postgresql"`
 }
 
 func NewConfig(logger *zap.Logger) (*Config, error) {

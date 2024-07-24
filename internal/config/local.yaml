@@ -6,5 +6,3 @@ postgresql:
   db_port: 5432
   db_name: users-service
   schema_name: users
-rate_limits:
-  completions_server_per_second: 0.5

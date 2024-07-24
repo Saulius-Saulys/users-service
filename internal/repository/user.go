@@ -50,24 +50,7 @@ func (u *User) Update(id string, user *dto.UpdateUser) (*model.User, error) {
 	userModel := &model.User{
 		ID: id,
 	}
-	if user.FirstName != nil {
-		userModel.FirstName = *user.FirstName
-	}
-	if user.LastName != nil {
-		userModel.LastName = *user.LastName
-	}
-	if user.Nickname != nil {
-		userModel.Nickname = *user.Nickname
-	}
-	if user.Password != nil {
-		userModel.Password = *user.Password
-	}
-	if user.Email != nil {
-		userModel.Email = *user.Email
-	}
-	if user.Country != nil {
-		userModel.Country = *user.Country
-	}
+	u.setUserUpdatedValues(user, userModel)
 
 	result := u.gormInstance.Updates(userModel)
 
@@ -99,4 +82,25 @@ func (u *User) GetByCountry(country dto.Country, page, limit int) ([]model.User,
 	}
 
 	return users, nil
+}
+
+func (u *User) setUserUpdatedValues(user *dto.UpdateUser, userModel *model.User) {
+	if user.FirstName != nil {
+		userModel.FirstName = *user.FirstName
+	}
+	if user.LastName != nil {
+		userModel.LastName = *user.LastName
+	}
+	if user.Nickname != nil {
+		userModel.Nickname = *user.Nickname
+	}
+	if user.Password != nil {
+		userModel.Password = *user.Password
+	}
+	if user.Email != nil {
+		userModel.Email = *user.Email
+	}
+	if user.Country != nil {
+		userModel.Country = *user.Country
+	}
 }

@@ -37,14 +37,12 @@ func ValidateJSONBody(c *gin.Context, body any) (int, error) {
 
 func operatorDescription(shortOperator string) string {
 	switch shortOperator {
-	case "gte":
-		return "greater than or equal to"
-	case "lte":
-		return "lower than or equal to"
 	case "min":
-		return "length greater or equal to"
-	case "uri":
-		return "to be a valid URI"
+		return "greater than"
+	case "max":
+		return "lower than"
+	case "email":
+		return "to be a valid email"
 	}
 
 	return shortOperator

@@ -16,11 +16,11 @@ import (
 
 const (
 	exchangeName = "users"
+	ActionUpdate = "update"
+	ActionDelete = "delete"
 )
 
 // Publisher owns the sole rabbit mq connection for message publishing in this service
-// (It is recommended to have separate connections for publishing and consuming messages)
-// Dialogs are then multiplexed on the Publisher by creating DialogPublishers
 type Publisher struct {
 	publisher rabbitroutine.Publisher
 	logger    *zap.Logger
@@ -66,6 +66,7 @@ func NewPublisherImpl(pub rabbitroutine.Publisher, logger *zap.Logger, closeFunc
 
 type OutputMessage struct {
 	Action string
+	ID     string
 	User   model.User
 }
 

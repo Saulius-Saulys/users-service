@@ -13,7 +13,6 @@ import (
 	"moul.io/zapgorm2"
 )
 
-// Address to broker shared between all tests in this package
 var gormConn *gorm.DB
 
 func TestMain(m *testing.M) {

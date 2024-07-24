@@ -72,7 +72,8 @@ func (u *User) Update(id string, user *dto.UpdateUser) (*model.User, error) {
 	err = u.rabbitMQPublisher.PublishMessage(
 		timeoutCtx,
 		&rabbitmq.OutputMessage{
-			Action: "update",
+			Action: rabbitmq.ActionUpdate,
+			ID:     userModel.ID,
 			User:   *userModel,
 		},
 	)
@@ -95,7 +96,8 @@ func (u *User) Delete(id string) error {
 	err = u.rabbitMQPublisher.PublishMessage(
 		timeoutCtx,
 		&rabbitmq.OutputMessage{
-			Action: "deleted",
+			Action: rabbitmq.ActionDelete,
+			ID:     id,
 		},
 	)
 	if err != nil {

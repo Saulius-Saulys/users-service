@@ -1,6 +1,7 @@
 # Users service
 
 * [General info](#general-info)
+* [Database migrations](#database-migrations)
 * [Linter](#linter)
 * [Swagger docs](#swaggerdocs)
 * [Mockery](#mockery)
@@ -8,7 +9,23 @@
 
 ## General info
 
-* To read API specification copy content from `docs/user-service-api_swagger.yaml` and paste it to [Swagger Editor](https://editor.swagger.io/) or any similar tool that can read OpenAPI specification. 
+* To read API specification copy content from `docs/user-service-api_swagger.yaml` and paste it to [Swagger Editor](https://editor.swagger.io/) or any similar tool that can read OpenAPI specification.
+* To run the application in docker container can be use `make start_docker_app` command that starts postgresql and rabbitmq in docker containers, builds application docker image and runs the application inside docker container.
+* To run the application locally can be use `make start_local_app` command that starts postgresql and rabbitmq in docker containers and runs the service.
+
+
+## Database migrations
+
+To run database migrations need to install tool `go-bindata` that generates go files used to install SQL schemas.
+
+Information on how to install `go-bindata` can be found here - https://github.com/kevinburke/go-bindata
+
+To generate migration files and execute database migrations run following commands:
+
+```
+    make package_migrations
+    make migrate
+```
 
 ## Linter
 
