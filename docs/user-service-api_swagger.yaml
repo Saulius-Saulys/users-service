@@ -16,7 +16,6 @@ definitions:
       country:
         $ref: '#/definitions/dto.Country'
       email:
-        description: 'TODO: add email validation'
         maxLength: 100
         minLength: 1
         type: string
@@ -48,7 +47,6 @@ definitions:
       country:
         $ref: '#/definitions/dto.Country'
       email:
-        description: 'TODO: add email validation'
         maxLength: 100
         minLength: 1
         type: string

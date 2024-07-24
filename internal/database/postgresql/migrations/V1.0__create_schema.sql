@@ -16,5 +16,6 @@ CREATE TABLE users.users
     PRIMARY KEY (id)
 );
 
+-- Index for country created because it is a common filter in the application
 CREATE INDEX idx_country
     ON users.users (country);

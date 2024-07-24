@@ -27,10 +27,6 @@ type HTTPClient struct {
 	TimeoutSeconds int `yaml:"timeout_seconds"`
 }
 
-type RateLimits struct {
-	CompletionsServerPerSecond float64 `yaml:"completions_server_per_second"`
-}
-
 type Config struct {
 	HTTPPort   string     `yaml:"http_port"`
 	BasePath   string     `yaml:"base_path"`

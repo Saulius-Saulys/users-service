@@ -32,7 +32,7 @@ func newUserService(
 // @version 1.0.0
 // @description this API for endpoints related to user.
 
-// @url http://localhost:8088
+// @url http://localhost:8080
 func main() {
 	cancelableCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
